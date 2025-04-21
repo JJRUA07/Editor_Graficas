@@ -3,6 +3,8 @@ import java.awt.Color;
 
 import javax.swing.JPanel;
 
+import entidades.TrazoDTO;
+
 public class Dibujo {
 
     private Nodo cabeza;
@@ -25,6 +27,16 @@ public class Dibujo {
         nodo.siguiente = null;
     }
 
+    public int getLongitud() {
+        int totalNodos = 0;
+        Nodo actual = cabeza;
+        while (actual != null) {
+            totalNodos++;
+            actual = actual.siguiente;
+        }
+        return totalNodos;
+    }
+
     public void dibujar(JPanel pnl) {
         limpiarPanel(pnl);
         // Obtener el objeto graficador
@@ -35,6 +47,18 @@ public class Dibujo {
             actual.getTrazo().dibujar(g, actual.getColor());
             actual = actual.siguiente;
         }
+    }
+
+    public boolean guardarJSON(String nombreArchivo){
+        TrazoDTO[] trazos = new TrazoDTO[getLongitud()];
+        // Recorer lista
+        Nodo actual = cabeza;
+        int fila = 0;
+        while (actual != null) {
+            trazos [fila]= actual.toDTO();
+            actual = actual.siguiente;
+        }
+        return Archivo.guardarJson(nombreArchivo, trazos);
     }
 
     // ********** Metodos Estaticos **********
